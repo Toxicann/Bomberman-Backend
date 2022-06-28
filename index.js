@@ -3,8 +3,9 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 
 const Level = require("./model/level");
+const Highscore = require("./model/highscore");
 
-require ('dotenv'). config ();
+require("dotenv").config();
 const source = process.env.DB_CONNSTR;
 
 const app = express();
@@ -62,21 +63,40 @@ app.delete("/delete_level/:id", async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
-/* This is connecting to the database. */
-mongoose.connect(process.env.DB_CONNECTIONSTR, (req, res) => {
-  console.log("connected");
+/* This is a route that is used to get all the highscores from the database. */
+app.get("/load_highscore", async (req, res) => {
+  try {
+    const highscores = await Highscore.find();
+    res.json(highscores);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 });
-=======
-mongoose.connect(source, {
-  useUnifiedTopology: true,
-  useNewUrlParser: true
-}).then(() => console.log(`MongoDB Connected with status ${mongoose.connection.readyState}`))
-    .catch((err) => console.log(err));
->>>>>>> refs/remotes/origin/main
+
+/* This is a route that is used to create a new highscore in the database. */
+app.post("/save_highscore", async (req, res) => {
+  try {
+    const highscore = new Highscore(req.body);
+    await highscore.save();
+    res.send(highscore);
+  } catch (err) {
+    res.send({ message: err });
+  }
+});
+
+mongoose
+  .connect(source, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+  })
+  .then(() =>
+    console.log(
+      `MongoDB Connected with status ${mongoose.connection.readyState}`
+    )
+  )
+  .catch((err) => console.log(err));
 
 /* This is the port that the server is running on. */
 app.listen(3000, () => {
   console.log("connected to port 3000");
 });
-
