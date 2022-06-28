@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+var cors = require("cors");
 
 const Level = require("./model/level");
 
@@ -7,9 +8,12 @@ require("dotenv/config");
 
 const app = express();
 
-const db = mongoose.connection;
-
+app.use(cors());
 app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.send("connected to db");
+});
 
 app.get("/create_level", async (req, res) => {
   try {
