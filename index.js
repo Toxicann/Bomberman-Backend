@@ -49,7 +49,7 @@ app.post("/create_level", async (req, res) => {
     const gameLevel = new Level(req.body);
     // console.log(gameLevel);
     await gameLevel.save();
-    res.send(gameLevel);
+    // res.send(gameLevel);
   } catch (err) {
     res.send({ message: err });
   }
