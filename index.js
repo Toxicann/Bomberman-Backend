@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-var cors = require("cors");
+const cors = require("cors");
 
 const Level = require("./model/level");
 
@@ -17,7 +17,7 @@ app.get("/", (req, res) => {
   res.send("connected to db");
 });
 
-app.get("/create_level", async (req, res) => {
+app.get("/load_level", async (req, res) => {
   try {
     const levels = await Level.find();
     res.json(levels);
@@ -26,7 +26,7 @@ app.get("/create_level", async (req, res) => {
   }
 });
 
-app.get("/create_level/:id", async (req, res) => {
+app.get("/load_level/:id", async (req, res) => {
   try {
     const levels = await Level.findOne({ level_name: req.params.id });
     res.json(levels);
@@ -35,7 +35,17 @@ app.get("/create_level/:id", async (req, res) => {
   }
 });
 
-app.delete("/create_level/:id", async (req, res) => {
+app.post("/create_level", async (req, res) => {
+  try {
+    const gameLevel = new Level(req.body);
+    await gameLevel.save();
+    res.send(gameLevel);
+  } catch (err) {
+    res.send({ message: err });
+  }
+});
+
+app.delete("/delete_level/:id", async (req, res) => {
   try {
     const levels = await Level.deleteOne({
       level_name: req.params.id,
@@ -43,17 +53,6 @@ app.delete("/create_level/:id", async (req, res) => {
     res.send("complete");
   } catch (err) {
     res.status(500).json({ message: err.message });
-  }
-});
-
-app.post("/create_level", async (req, res) => {
-  try {
-    const gameLevel = new Level(req.body);
-    // console.log(gameLevel);
-    await gameLevel.save();
-    res.send(gameLevel);
-  } catch (err) {
-    res.send({ message: err });
   }
 });
 
