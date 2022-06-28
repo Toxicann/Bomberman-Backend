@@ -4,7 +4,8 @@ const cors = require("cors");
 
 const Level = require("./model/level");
 
-require("dotenv/config");
+require ('dotenv'). config ();
+const source = process.env.DB_CONNSTR;
 
 const app = express();
 
@@ -56,10 +57,13 @@ app.delete("/delete_level/:id", async (req, res) => {
   }
 });
 
-mongoose.connect(process.env.DB_CONNECTIONSTR, (req, res) => {
-  console.log("connected");
-});
+mongoose.connect(source, {
+  useUnifiedTopology: true,
+  useNewUrlParser: true
+}).then(() => console.log(`MongoDB Connected with status ${mongoose.connection.readyState}`))
+    .catch((err) => console.log(err));
 
 app.listen(3000, () => {
   console.log("connected to port 3000");
 });
+
