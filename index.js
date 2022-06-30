@@ -76,7 +76,8 @@ app.get("/load_highscore", async (req, res) => {
 /* This is a route that is used to create a new highscore in the database. */
 app.post("/save_highscore", async (req, res) => {
   try {
-    const highscore = new Highscore(req.body);
+    const highscore = await Highscore.findOne()
+    highscore.Highscore = req.body.Highscore;
     await highscore.save();
     res.send(highscore);
   } catch (err) {
